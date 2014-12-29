@@ -207,7 +207,7 @@ class Recoder():
         if 'regex' in kwargs:
             regex = kwargs['regex']
         else:
-            regex = '.*'
+            regex = '.*\.flv'
 
         if 'increments' in kwargs:
             increments = kwargs['increments']
@@ -226,7 +226,9 @@ class Recoder():
             rval = False
 
         if rval:
-            self.flv_to_mp3(flv_file_list, increments)
+            rval = self.flv_to_mp3(flv_file_list, increments)
+
+        return rval
 
     def load_input_files_by_regex(self, regex):
 
@@ -263,7 +265,7 @@ class Recoder():
 
     def flv_to_mp3(self, file_list, increments):
 
-        rval = 0
+        rval = True
         logger_name = '{0}.flv_to_mp3'.format(__name__)
         logger = logging.getLogger(logger_name)
 
@@ -275,6 +277,8 @@ class Recoder():
 
         executer = Executer()
 
+        coded_file_count = 0
+        failed_count = 0
         for flv_file in file_list:
             #log_msg = "Recoding: {0}".format(flv_file)
             #logger.info(log_msg)
@@ -311,7 +315,25 @@ class Recoder():
                                                         increments)
                 log_msg = "command: {0}".format(com)
                 logger.debug(log_msg)
-                rval = executer.exec_com(com)
+                com_result = executer.exec_com(com)
+
+                if com_result:
+                    coded_file_count += 1
+                else:
+                    failed_count += 1
+
+        if failed_count:
+            log_msg = ("{0} files coded successfully / "
+                       "{1} failures"
+                       .format(coded_file_count, failed_count))
+            logger.warn(log_msg)
+            rval = False
+        else:
+            log_msg = ("All {0} files recoded successfully"
+                       .format(coded_file_count))
+            logger.info(log_msg)
+
+        return rval
 
     def get_duration(self, input_file):
 

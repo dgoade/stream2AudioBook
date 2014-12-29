@@ -22,7 +22,7 @@ def main():
     verbose = False
     action = 'recode'
     config_file = "s2ab.yml"
-    regex = ".*"
+    regex = ".*\.flv$"
 
     try:
         opts, args = getopt.getopt(sys.argv[1:],
@@ -72,11 +72,11 @@ def main():
         print ("regex: %s" % regex)
         print ("verbose: %s" % verbose)
 
-    logging_configurator = loggingConfigurator()
-    recode = Recoder(logging_configurator = logging_configurator,
-                     config_file = config_file)
-
-    recode.recode_files(regex=regex)
+    if rval:
+        logging_configurator = loggingConfigurator()
+        recode = Recoder(logging_configurator = logging_configurator,
+                         config_file = config_file)
+        rval = recode.recode_files(regex=regex)
 
 
     if rval:
