@@ -11,8 +11,6 @@ import yaml
 import logging
 from utils.loggingConfigurator import loggingConfigurator
 from utils.workingDir import workingDir
-from utils.executer import Executer
-from logging.config import dictConfig
 from pprint import pformat
 
 class RawFileHandler(PatternMatchingEventHandler):
@@ -34,15 +32,28 @@ class RawFileHandler(PatternMatchingEventHandler):
 
         # the file will be processed here
 
-    log_msg = "'{0}' event occurred for '{1}'"
+        log_msg = "'{0}' event occurred for '{1}'"
         log_msg = log_msg.format(event.event_type, event.src_path)
         logger.debug(log_msg)
         #print event.src_path, event.event_type  # print now only for degug
 
         size = os.path.getsize(event.src_path)
         if size > 0:
-            log_msg = "File {0} has content".format(event.src_path)
+            log_msg = "File {0} has content -- processing".format(event.src_path)
             logger.debug(log_msg)
+
+            logging_configurator = loggingConfigurator()
+            recode = Recoder(logging_configurator = logging_configurator,
+                             config_file = 'recoder.yml')
+            rval = recode.recode_files(regex=event.src_path)
+
+            if rval:
+                log_msg = "Recoder completed successfully"
+            else:
+                log_msg = "Recoder failed"
+
+    logging.debug(log_msg)
+
         else:
             log_msg = "File {0} has no content so ignoring it for now".format(event.src_path)
             logger.debug(log_msg) 
@@ -166,8 +177,7 @@ class RawDirObserver():
         rval = True
 
         observer = Observer()
-        observer.schedule(RawFileHandler(),
-                          path=self.config_dict['RawDirObserver']['watch_dir'])
+        observer.schedule(RawFileHandler(path=self.config_dict['RawDirObserver']['watch_dir']))
         observer.start()
 
         try:

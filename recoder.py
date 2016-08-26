@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import sys
 import os.path
 import yaml
 import logging
@@ -8,7 +7,6 @@ import re
 from utils.loggingConfigurator import loggingConfigurator
 from utils.workingDir import workingDir
 from utils.executer import Executer
-from logging.config import dictConfig
 from pprint import pformat
 
 class Recoder:
