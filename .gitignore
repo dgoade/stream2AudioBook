@@ -157,4 +157,4 @@ nytprof.out
 *.o
 *.bs
 
-
+logs/*
