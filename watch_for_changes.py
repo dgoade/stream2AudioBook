@@ -9,9 +9,11 @@ from watchdog.events import PatternMatchingEventHandler
 import getopt
 import yaml
 import logging
+from recoder import Recoder
 from utils.loggingConfigurator import loggingConfigurator
 from utils.workingDir import workingDir
 from pprint import pformat
+import ntpath
 
 class RawFileHandler(PatternMatchingEventHandler):
     patterns = ["*.flv"]
@@ -42,17 +44,19 @@ class RawFileHandler(PatternMatchingEventHandler):
             log_msg = "File {0} has content -- processing".format(event.src_path)
             logger.debug(log_msg)
 
+            regex = ntpath.basename(event.src_path)
+
             logging_configurator = loggingConfigurator()
             recode = Recoder(logging_configurator = logging_configurator,
                              config_file = 'recoder.yml')
-            rval = recode.recode_files(regex=event.src_path)
+            rval = recode.recode_files(regex=regex)
 
             if rval:
                 log_msg = "Recoder completed successfully"
             else:
                 log_msg = "Recoder failed"
 
-    logging.debug(log_msg)
+            logging.debug(log_msg)
 
         else:
             log_msg = "File {0} has no content so ignoring it for now".format(event.src_path)
@@ -177,7 +181,8 @@ class RawDirObserver():
         rval = True
 
         observer = Observer()
-        observer.schedule(RawFileHandler(path=self.config_dict['RawDirObserver']['watch_dir']))
+        observer.schedule(RawFileHandler(),
+                          path=self.config_dict['RawDirObserver']['watch_dir'])
         observer.start()
 
         try:
