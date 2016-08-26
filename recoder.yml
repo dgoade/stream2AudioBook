@@ -3,6 +3,7 @@ recoder:
   output_dir: /home/ec2-user/Dropbox/radio-recoded
   ffmpeg_exe: /home/ec2-user/bin/ffmpeg
   ffprobe_exe: /home/ec2-user/bin/ffprobe
+  remove_recoded_files: true
 logging:
 # begin my additional keys to the logging config dictionary
   # loggingConfigurator will verify or create this directory before loading the config
