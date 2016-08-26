@@ -55,7 +55,7 @@ def init():
     rval=True
 
     #logging.config.fileConfig('./logging.conf')
-    f = open('./s2ab.yml')
+    f = open('./recoder.yml')
 
 
     loggingConfig = yaml.safe_load(f)

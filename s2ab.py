@@ -21,7 +21,7 @@ def main():
     no_op = False
     verbose = False
     action = 'recode'
-    config_file = "s2ab.yml"
+    config_file = "recoder.yml"
     regex = ".*\.flv$"
 
     try:

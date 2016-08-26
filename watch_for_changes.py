@@ -6,6 +6,7 @@ import time
 from watchdog.observers import Observer  
 from watchdog.events import PatternMatchingEventHandler  
 
+import getopt
 import yaml
 import logging
 from utils.loggingConfigurator import loggingConfigurator
@@ -33,17 +34,17 @@ class RawFileHandler(PatternMatchingEventHandler):
 
         # the file will be processed here
 
-        log_msg = "event {0} occurred for src_path {1}"
-        log_msg = log_msg.format(event.src_path, event.event_type)
+    log_msg = "'{0}' event occurred for '{1}'"
+        log_msg = log_msg.format(event.event_type, event.src_path)
         logger.debug(log_msg)
-        print event.src_path, event.event_type  # print now only for degug
+        #print event.src_path, event.event_type  # print now only for degug
 
         size = os.path.getsize(event.src_path)
         if size > 0:
             log_msg = "File {0} has content".format(event.src_path)
             logger.debug(log_msg)
         else:
-            log_msg = "File {0} has no content".format(event.src_path)
+            log_msg = "File {0} has no content so ignoring it for now".format(event.src_path)
             logger.debug(log_msg) 
 
     def on_modified(self, event):
@@ -65,7 +66,7 @@ class RawDirObserver():
 
         rval = True
         logger_name = '{0}.__init__'.format(__name__)
-        config_file = "s2ab.yml"
+        config_file = "watcher.yml"
 
         if 'config_file' in kwargs:
             config_file = kwargs['config_file']
@@ -166,8 +167,7 @@ class RawDirObserver():
 
         observer = Observer()
         observer.schedule(RawFileHandler(),
-                          path=self.config_dict['RawDirObserver']['watch_dir']
-                          if args else '.')
+                          path=self.config_dict['RawDirObserver']['watch_dir'])
         observer.start()
 
         try:
@@ -188,7 +188,7 @@ def main():
     no_op = False
     verbose = False
     action = 'watch'
-    config_file = "s2ab.yml"
+    config_file = "watcher.yml"
     regex = ".*\.flv$"
 
     try:
