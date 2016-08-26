@@ -1,8 +1,10 @@
+RawFileHandler:
+  watch_dir: /home/ec2-user/Dropbox/radio-aws 
 recoder:
-  input_dir: /Users/david.goade/Downloads/Radio
-  output_dir: output
-  ffmpeg_exe: /Users/david.goade/Desktop/ffmpeg
-  ffprobe_exe: /Users/david.goade/Desktop/ffprobe
+  input_dir: /home/ec2-user/Dropbox/radio-aws 
+  output_dir: /home/ec2-user/Dropbox/radio-recoded
+  ffmpeg_exe: /home/ec2-user/bin/ffmpeg
+  ffprobe_exe: /home/ec2-user/bin/ffprobe
 logging:
 # begin my additional keys to the logging config dictionary
   # loggingConfigurator will verify or create this directory before loading the config
@@ -29,7 +31,7 @@ logging:
     file:
       class: "logging.handlers.RotatingFileHandler"
       formatter: "simple"
-      filename: "logs/recoder.log"
+      filename: "logs/s2ab.log"
       mode: "a"
       maxBytes: 1200000
       backupCount: 5
@@ -41,6 +43,12 @@ logging:
         - "console"
       propagate: False
     recoder:
+      level: "DEBUG"
+      handlers:
+        - "file"
+        - "console"
+      propagate: false
+    RawFileHandler.process:
       level: "DEBUG"
       handlers:
         - "file"
