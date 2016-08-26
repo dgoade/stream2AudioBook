@@ -11,7 +11,7 @@ from utils.executer import Executer
 from logging.config import dictConfig
 from pprint import pformat
 
-class Recoder():
+class Recoder:
 
     config_dict = {}
 
