@@ -1,0 +1,64 @@
+RawDirObserver:
+  watch_dir: /home/ec2-user/Dropbox/radio-aws 
+recoder:
+  input_dir: /home/ec2-user/Dropbox/radio-aws 
+  output_dir: /home/ec2-user/Dropbox/radio-recoded
+  ffmpeg_exe: /home/ec2-user/bin/ffmpeg
+  ffprobe_exe: /home/ec2-user/bin/ffprobe
+logging:
+# begin my additional keys to the logging config dictionary
+  # loggingConfigurator will verify or create this directory before loading the config
+  log_dir: logs
+# end my additions keys to the logging config dictionary
+  version: 1
+  disable_existing_loggers: false
+  # needs to be false until someone figures-out how to do incremental configurations with handlers
+  incremental: false
+  formatters:
+    simple:
+      format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  handlers:
+    console:
+      class: "logging.StreamHandler"
+      level: "DEBUG"
+      formatter: "simple"
+      stream: "ext://sys.stdout"
+    stderr:
+      class: "logging.StreamHandler"
+      level: "WARN"
+      formatter: "simple"
+      stream: "ext://sys.stderr"
+    file:
+      class: "logging.handlers.RotatingFileHandler"
+      formatter: "simple"
+      filename: "logs/s2ab.log"
+      mode: "a"
+      maxBytes: 1200000
+      backupCount: 5
+  loggers:
+    __main__:
+      level: "DEBUG"
+      handlers:
+        - "file"
+        - "console"
+      propagate: False
+    recoder:
+      level: "DEBUG"
+      handlers:
+        - "file"
+        - "console"
+      propagate: false
+    RawFileHandler.process:
+      level: "DEBUG"
+      handlers:
+        - "file"
+        - "console"
+      propagate: false
+    utils:
+      level: "DEBUG"
+      handlers:
+        - "file"
+        - "console"
+      propagate: false
+  root:
+    level: "WARN"
