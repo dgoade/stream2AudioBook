@@ -171,7 +171,7 @@ class RawDirObserver():
 
         if rval:
             log_msg = "RawDirObserver configuration is valid."
-            logger.info(log_msg)
+            logger.debug(log_msg)
         else:
             log_msg = "RawDirObserver configuration is invalid."
             logger.error(log_msg)
@@ -179,13 +179,19 @@ class RawDirObserver():
     def schedule(self):
 
         rval = True
+        logger_name = '{0}.schedule'.format(__name__)
+        logger = logging.getLogger(logger_name)
+
+        watch_dir = self.config_dict['RawDirObserver']['watch_dir']
 
         observer = Observer()
         observer.schedule(RawFileHandler(),
-                          path=self.config_dict['RawDirObserver']['watch_dir'])
+                          path=watch_dir)
         observer.start()
 
         try:
+            log_msg = "Watching directory for changes: {0}".format(watch_dir)
+            logger.info(log_msg)
             while True:
                 time.sleep(1)
         except KeyboardInterrupt:

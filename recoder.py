@@ -174,6 +174,18 @@ class Recoder:
                 rval = False
 
         if rval:
+            if 'remove_recoded_files' in recoder_config:
+                self.config_dict['remove_recoded_files'] = recoder_config['remove_recoded_files']
+                log_msg = "remove_recoded_files setting found: {0}"
+                log_msg = log_msg.format(self.config_dict['remove_recoded_files'])
+                logger.debug(log_msg)
+            else:
+                self.config_dict['remove_recoded_files'] = self.default_config['remove_recoded_files']
+                log_msg = ("No remove_recoded_files setting configured"
+                " -- using default setting: {0}".format(self.config_dict['remove_recoded_files']))
+                logger.debug(log_msg)
+
+        if rval:
             if 'input_dir' in recoder_config:
                 input_dir = recoder_config['input_dir']
                 log_msg = "Input dir setting found: {0}".format(input_dir)
@@ -190,15 +202,6 @@ class Recoder:
             else:
                 rval = False
 
-        if rval:
-            if 'remove_recoded_files' in recoder_config:
-                remove_recoded_files = recoder_config['remove_recoded_files']
-                log_msg = "remove_recoded_files setting found: {0}".format(remove_recoded_files)
-            else:
-                remove_recoded_files = self.default_config['remove_recoded_files']
-                log_msg = ("No remove_recode_files setting configured"
-                " -- using default setting: {0}".format(remove_recoded_files))
-                logger.debug(log_msg)
 
         if rval:
             log_msg = "Recoder configuration is valid."
@@ -226,7 +229,7 @@ class Recoder:
         if 'remove_recoded_file' in kwargs:
             remove_recoded_files = kwargs['remove_recoded_files']
         else:
-            remove_recoded_files = False
+            remove_recoded_files = self.config_dict['remove_recoded_files']
 
         flv_file_list = self.load_input_files_by_regex(regex)
 
@@ -338,26 +341,23 @@ class Recoder:
                 else:
                     failed_count += 1
 
+            if remove_recoded_files:
+                log_msg = ("removing the recoded file: {0}"
+                           .format(flv_file))
+                logger.info(log_msg)
+                os.remove(flv_file)
+
         if failed_count:
             log_msg = ("{0} files coded successfully / "
                        "{1} failures"
                        .format(coded_file_count, failed_count))
             logger.warn(log_msg)
-            if remove_recoded_files:
-                log_msg = ("not removing the recoded file since there were failures: {0}"
-                           .format(mp3_path))
-                logger.info(log_msg)
             rval = False
         else:
             log_msg = ("All {0} files recoded successfully"
                        .format(coded_file_count))
             logger.info(log_msg)
 
-            if remove_recoded_files:
-                log_msg = ("removing the recoded file: {0}"
-                           .format(mp3_path))
-                logger.info(log_msg)
-                os.remove(mp3_path)
 
         return rval
 
