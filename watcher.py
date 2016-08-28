@@ -32,6 +32,10 @@ class RawFileHandler(PatternMatchingEventHandler):
         logger_name = '{0}.process'.format(__name__)
         logger = logging.getLogger(logger_name)
 
+        real_path = os.path.realpath(__file__)
+        cur_dir = os.path.dirname(real_path)
+        config_file = "{0}/watcher.yml".format(cur_dir)
+
         # the file will be processed here
 
         log_msg = "'{0}' event occurred for '{1}'"
@@ -48,7 +52,7 @@ class RawFileHandler(PatternMatchingEventHandler):
 
             logging_configurator = loggingConfigurator()
             recode = Recoder(logging_configurator = logging_configurator,
-                             config_file = 'recoder.yml')
+                             config_file = config_file)
             rval = recode.recode_files(regex=regex)
 
             if rval:
@@ -81,7 +85,11 @@ class RawDirObserver():
 
         rval = True
         logger_name = '{0}.__init__'.format(__name__)
-        config_file = "watcher.yml"
+
+        real_path = os.path.realpath(__file__)
+        cur_dir = os.path.dirname(real_path)
+        config_file = "{0}/watcher.yml".format(cur_dir)
+
 
         if 'config_file' in kwargs:
             config_file = kwargs['config_file']
@@ -209,8 +217,12 @@ def main():
     no_op = False
     verbose = False
     action = 'watch'
-    config_file = "watcher.yml"
+    #config_file = "watcher.yml"
     regex = ".*\.flv$"
+
+    real_path = os.path.realpath(__file__)
+    cur_dir = os.path.dirname(real_path)
+    config_file = "{0}/watcher.yml".format(cur_dir)
 
     try:
         opts, args = getopt.getopt(sys.argv[1:],

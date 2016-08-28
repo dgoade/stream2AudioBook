@@ -1,6 +1,6 @@
 RawDirObserver:
   watch_dir: /home/ec2-user/Dropbox/radio-aws
-  recoder_config_file: recoder.yml
+  recoder_config_file: /home/ec2-user/stream2AudioBook/recoder.yml
 logging:
 # begin my additional keys to the logging config dictionary
   # loggingConfigurator will verify or create this directory before loading the config
@@ -27,7 +27,7 @@ logging:
     file:
       class: "logging.handlers.RotatingFileHandler"
       formatter: "simple"
-      filename: "logs/watcher.log"
+      filename: /home/ec2-user/stream2AudioBook/logs/watcher.log
       mode: "a"
       maxBytes: 1200000
       backupCount: 5

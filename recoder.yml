@@ -30,7 +30,7 @@ logging:
     file:
       class: "logging.handlers.RotatingFileHandler"
       formatter: "simple"
-      filename: "logs/recoder.log"
+      filename: /home/ec2-user/stream2AudioBook/logs/recoder.log
       mode: "a"
       maxBytes: 1200000
       backupCount: 5

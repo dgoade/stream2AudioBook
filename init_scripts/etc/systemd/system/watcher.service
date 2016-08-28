@@ -1,0 +1,14 @@
+[Unit]
+Description=Watcher is a service that watches a specified directory for new flv files and calls s2ab to recode them to mp3 files.
+
+[Service]
+Environment=LC_ALL=en_US.UTF-8
+Environment=LANG=en_US.UTF-8
+EnvironmentFile=-/etc/sysconfig/watcher
+ExecStart=/bin/watcher start
+ExecReload=/bin/watcher restart
+ExecStop=/bin/watcher stop
+Type=forking
+
+[Install]
+WantedBy=multi-user.target
