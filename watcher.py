@@ -34,7 +34,7 @@ class RawFileHandler(PatternMatchingEventHandler):
 
         real_path = os.path.realpath(__file__)
         cur_dir = os.path.dirname(real_path)
-        config_file = "{0}/watcher.yml".format(cur_dir)
+        config_file = "{0}/recoder.yml".format(cur_dir)
 
         # the file will be processed here
 
@@ -50,6 +50,8 @@ class RawFileHandler(PatternMatchingEventHandler):
 
             regex = ntpath.basename(event.src_path)
 
+            log_msg = "Calling Recoder with config_file: {0}".format(config_file)
+            logger.debug(log_msg)
             logging_configurator = loggingConfigurator()
             recode = Recoder(logging_configurator = logging_configurator,
                              config_file = config_file)

@@ -2,6 +2,7 @@
 
 __author__ = 'dgoade'
 
+import os
 import sys
 import logging
 import getopt
@@ -21,8 +22,11 @@ def main():
     no_op = False
     verbose = False
     action = 'recode'
-    config_file = "recoder.yml"
     regex = ".*\.flv$"
+
+    real_path = os.path.realpath(__file__)
+    cur_dir = os.path.dirname(real_path)
+    config_file = "{0}/recoder.yml".format(cur_dir)
 
     try:
         opts, args = getopt.getopt(sys.argv[1:],
