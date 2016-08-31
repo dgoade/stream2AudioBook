@@ -299,53 +299,77 @@ class Recoder:
         coded_file_count = 0
         failed_count = 0
         for flv_file in file_list:
-            #log_msg = "Recoding: {0}".format(flv_file)
-            #logger.info(log_msg)
-            flv_file_name = os.path.basename(flv_file)
 
-            #mp3_file_name = re.sub('\.flv$', '.mp3', flv_file_name)
-            file_name_match = file_name_pattern.match(flv_file_name)
-            if file_name_match:
-                if file_name_match.group(1):
-                    mp3_file_name_prefix = file_name_match.group(1)
+            try:
+                size = os.path.getsize(flv_file)
+                if size > 0:
+
+                    flv_file_name = os.path.basename(flv_file)
+                    file_name_match = file_name_pattern.match(flv_file_name)
+                    if file_name_match:
+                        if file_name_match.group(1):
+                            mp3_file_name_prefix = file_name_match.group(1)
+                        else:
+                            log_msg = ("Skipping file because failed to parse"
+                            " the input file name: {0}".format(flv_file_name))
+                            logger.error(log_msg)
+                            continue
+
+                    duration = self.get_duration(flv_file)
+
+                    minutes = int(duration / 60)
+                    if minutes <= 0:
+                        minutes = 1
+
+                    for position in range(0, minutes):
+                        mp3_file_name = '{0}-{1}.mp3'.format(mp3_file_name_prefix,
+                                                             str(position).zfill(3))
+                        log_msg = "Creating: {0}".format(mp3_file_name)
+                        logger.debug(log_msg)
+
+                        mp3_path = os.path.join(out_dir, mp3_file_name)
+                        com = "{0} -y -ss {3} -t {4} -i {1} {2}".format(exe,
+                                                                flv_file,
+                                                                mp3_path,
+                                                                (position * 60),
+                                                                increments)
+                        log_msg = "command: {0}".format(com)
+                        logger.debug(log_msg)
+
+                        try:
+                            com_result = executer.exec_com(com)
+
+                            if com_result:
+                                coded_file_count += 1
+                            else:
+                                failed_count += 1
+
+                        except Exception:
+                            log_msg = "Exception occurred attempting to recode {0}"
+                            log_msg = log_msg.format(flv_file)
+                            logging.exception(log_msg)
+                            failed_count += 1
+
+                    if remove_recoded_files:
+                        if failed_count:
+                            log_msg = ("not removing the flv file: {0}"
+                                       .format(flv_file))
+                            logger.info(log_msg)
+                        else:
+                            log_msg = ("removing the recoded file: {0}"
+                                       .format(flv_file))
+                            logger.info(log_msg)
+                            os.remove(flv_file)
+
                 else:
-                    log_msg = ("Skipping file because failed to parse"
-                    " the input file name: {0}".format(flv_file_name))
-                    logger.error(log_msg)
-                    continue
+                    log_msg = "File {0} has no content so ignoring it for now".format(flv_file)
+                    logger.debug(log_msg) 
 
-            duration = self.get_duration(flv_file)
-
-            minutes = int(duration / 60)
-            if minutes <= 0:
-                minutes = 1
-
-            for position in range(0, minutes):
-                mp3_file_name = '{0}-{1}.mp3'.format(mp3_file_name_prefix,
-                                                     str(position).zfill(3))
-                log_msg = "Creating: {0}".format(mp3_file_name)
-                logger.debug(log_msg)
-
-                mp3_path = os.path.join(out_dir, mp3_file_name)
-                com = "{0} -y -ss {3} -t {4} -i {1} {2}".format(exe,
-                                                        flv_file,
-                                                        mp3_path,
-                                                        (position * 60),
-                                                        increments)
-                log_msg = "command: {0}".format(com)
-                logger.debug(log_msg)
-                com_result = executer.exec_com(com)
-
-                if com_result:
-                    coded_file_count += 1
-                else:
-                    failed_count += 1
-
-            if remove_recoded_files:
-                log_msg = ("removing the recoded file: {0}"
-                           .format(flv_file))
-                logger.info(log_msg)
-                os.remove(flv_file)
+            except Exception:
+                log_msg = "Exception occurred attempting to get size of {0}"
+                log_msg = log_msg.format(flv_file)
+                logging.exception(log_msg)
+                rval = False
 
         if failed_count:
             log_msg = ("{0} files coded successfully / "
