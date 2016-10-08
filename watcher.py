@@ -45,29 +45,34 @@ class RawFileHandler(PatternMatchingEventHandler):
 
 
         try:
-            size = os.path.getsize(event.src_path)
-            if size > 0:
-                log_msg = "File {0} has content -- processing".format(event.src_path)
-                logger.debug(log_msg)
+            if os.path.isfile(event.src_path): 
+                size = os.path.getsize(event.src_path)
+                if size > 0:
+                    log_msg = "File {0} has content -- processing".format(event.src_path)
+                    logger.debug(log_msg)
 
-                regex = ntpath.basename(event.src_path)
+                    regex = ntpath.basename(event.src_path)
 
-                log_msg = "Calling Recoder with config_file: {0}".format(config_file)
-                logger.debug(log_msg)
-                logging_configurator = loggingConfigurator()
-                recode = Recoder(logging_configurator = logging_configurator,
-                                 config_file = config_file)
-                rval = recode.recode_files(regex=regex)
+                    log_msg = "Calling Recoder with config_file: {0}".format(config_file)
+                    logger.debug(log_msg)
+                    logging_configurator = loggingConfigurator()
+                    recode = Recoder(logging_configurator = logging_configurator,
+                                     config_file = config_file)
+                    rval = recode.recode_files(regex=regex)
 
-                if rval:
-                    log_msg = "Recoder completed successfully"
+                    if rval:
+                        log_msg = "Recoder completed successfully"
+                    else:
+                        log_msg = "Recoder failed"
+
+                    logging.debug(log_msg)
+
                 else:
-                    log_msg = "Recoder failed"
-
-                logging.debug(log_msg)
+                    log_msg = "File {0} has no content so ignoring it for now".format(event.src_path)
+                    logger.debug(log_msg) 
 
             else:
-                log_msg = "File {0} has no content so ignoring it for now".format(event.src_path)
+                log_msg = "File {0} does not exist".format(event.src_path)
                 logger.debug(log_msg) 
 
         except Exception:

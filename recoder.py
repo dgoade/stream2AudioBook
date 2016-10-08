@@ -404,12 +404,20 @@ class Recoder:
 
         log_msg = "command: {0}".format(com)
         logger.debug(log_msg)
-        rval, stdout, stderr = executer.exec_com(com)
+        try:
+            rval, stdout, stderr = executer.exec_com(com)
+        except Exception:
+            log_msg = "Exception occurred attempting to ger duration of {0}"
+            log_msg = log_msg.format(input_file)
+            logging.exception(log_msg)
+            rval = 1
 
         if rval == 0:
             log_msg = "Duration={0}".format(stdout)
             logger.debug(log_msg)
             rval = float(stdout)
+        else:
+            rval = 0
 
         return rval
 
