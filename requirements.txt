@@ -5,7 +5,7 @@ chardet==2.2.1
 cloud-init==0.7.6
 configobj==4.7.2
 decorator==3.4.0
-ecdsa==0.13
+ecdsa==0.13.3
 ethtool==0.8
 Fabric==1.12.0
 iniparse==0.4
