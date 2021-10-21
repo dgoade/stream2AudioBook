@@ -1,5 +1,5 @@
 argh==0.26.2
-Babel==0.9.6
+Babel==2.9.1
 backports.ssl-match-hostname==3.4.0.2
 chardet==2.2.1
 cloud-init==0.7.6
