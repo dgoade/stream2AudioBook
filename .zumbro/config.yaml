@@ -11,6 +11,7 @@
 # Tell Zumbro which language you want checked
 # in this repo with code quality tools
 # Zumbro currently supports: python 
+# push a trivial change
 language: python
 
 # pre-commit
