@@ -18,7 +18,7 @@ lxml==3.2.1
 M2Crypto==0.21.1
 MarkupSafe==0.11
 mercurial==2.6.2
-paramiko==1.17.2
+paramiko==2.10.1
 pathtools==0.1.2
 pciutils==1.7.3
 perf==0.1
